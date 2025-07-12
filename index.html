@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Llama.cpp Server</title>
+    <link rel="stylesheet" href="./assets/pico-main/css/pico.css">
+    <link rel="stylesheet" href="./assets/pico-main/css/pico.colors.min.css">
+    <style>
+        #logs {
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: darkslategray ;
+            color: whitesmoke;
+        }
+
+        .logsWrapperDiv {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .settingsDialogCloseButton {
+
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: whitesmoke;
+            user-select: none;
+        }
+
+        dialog {
+            min-height: fit-content !important;
+            min-width: auto !important;
+        }
+
+        #settingsDialog.modal {
+            width: 600px !important;
+            height: 600px !important;
+            border-width: 2px;
+            border-style: solid;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav>
+            <ul>
+                <h1>Control Llama.cpp Server</h1>
+            </ul>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#" id="toggle-devtools">DevTools</a></li>
+                <li><a href="#" onclick="openSettingsModal()">Settings</a></li>
+            </ul>
+        </nav>
+
+        <form>
+            <label for="modelPath">Model Path:</label>
+            <fieldset role="group">
+                <input name="modelPath" id="modelPath" placeholder="Choose Model" />
+                <button id="choose-model"> ... </button>
+            </fieldset>
+        </form>
+
+        <div class="grid">
+            <div>
+                <label for="ctx">Context Size: (default = 32000)</label>
+                <input type="text" id="ctx" value="32000">
+            </div>
+            <div>
+                <label for="host">Host: (default = 0.0.0.0)</label>
+                <input type="text" id="host" value="0.0.0.0">
+            </div>
+            <div>
+                <label for="port">Port: (default = 10000)</label>
+                <input type="text" id="port" value="10002">
+            </div>
+        </div>
+
+        <div class="grid">
+            <div>
+                <button onclick="startServer()">Start Server</button>
+            </div>
+            <div>
+                <button onclick="stopServer()">Stop Server</button>
+            </div>
+            <div>
+
+            </div>
+        </div>
+
+
+        <hr>
+
+        <h2>Logs:</h2>
+        <div class="logsWrapperDiv">
+            <pre id="logs"></pre>
+        </div>
+    </div>
+
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsOverlay"></div>
+    <dialog class="modal pico-color-zinc-500" id="settingsDialog">
+        <!-- Custom X icon -->
+        <span onclick="closeSettingsModal()" class="settingsDialogCloseButton" role="button" aria-label="Close">X</span>
+        <div class="container-fluid">
+            <div style="position: relative;">
+
+                <h3>Settings</h3>
+
+                <form>
+                    <label for="modelPath">Llama Server Path:</label>
+                    <fieldset role="group">
+                        <input name="modelPath" id="llamaServerPath" placeholder="Choose llama-server Path" />
+                    </fieldset>
+                </form>
+
+                <div class="grid">
+                    <div>
+                        <!-- Light/Dark Mode Toggle (using Pico's switch) -->
+                        <label for="themeToggle">Dark Mode</label>
+                        <input type="checkbox" id="themeToggle" role="switch">
+                    </div>
+                </div>
+
+                <!-- Default Values Section -->
+                <h4>Default Settings:</h4>
+                <div class="grid">
+                    <div>
+                        <label for="defaultHost">Host (e.g., 127.0.0.1):</label>
+                        <input type="text" id="defaultHost" placeholder="127.0.0.1">
+                    </div>
+                    <div>
+                        <label for="defaultPort">Port (e.g., 8080):</label><br />
+                        <input type="number" id="defaultPort" min="1" max="65535" value="10002">
+                    </div>
+                    <div>
+                        <label for="defaultCtxSize">Context Size:</label><br />
+                        <input type="number" id="defaultCtxSize" min="4000" step="128" placeholder="32000">
+                    </div>
+                </div>
+            </div>
+    </dialog>
+
+
+
+
+
+
+
+    <script src="./assets/pico-main/scripts/build-themes.js" defer></script>
+    <script src="settings-manager.js" defer></script>
+    <script src="settings.js" defer></script>
+    <script src="renderer.js" defer></script>
+</body>
+
+</html>
+
+<!--
+
+-->
