@@ -1,12 +1,17 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
+
+
+
 contextBridge.exposeInMainWorld('electronAPI', {
   // File dialog
   showOpenDialog: async () => {
     try {
       const filePath = await ipcRenderer.invoke('open-file-dialog');
+      //updateDisplay(filePath);
       return filePath;
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error opening file dialog:', error);
       return null;
     }

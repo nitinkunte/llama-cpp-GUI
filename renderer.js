@@ -48,9 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('choose-model').addEventListener('click', async () => {
     try {
         const filePath = await window.electronAPI.showOpenDialog();
-        
+        //console.log("before file");
+        //console.log(filePath);
+        //console.log("after file");
         if (filePath) {
-            updateDisplay(filePath);
+            updateDisplay2(filePath);
         }
     } catch (error) {
         console.error('Error selecting file:', error);
@@ -58,7 +60,7 @@ document.getElementById('choose-model').addEventListener('click', async () => {
     }
 });
 
-function updateDisplay(path) {
+function updateDisplay2(path) {
     if (!path) return;
     document.getElementById('modelPath').value = path;
     // Save the setting directly since programmatic value changes don't trigger 'change' events
