@@ -1,15 +1,14 @@
 const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
-const windowStateKeeper = require('electron-window-state'); // Add this
+const windowStateKeeper = require('electron-window-state');
 
 let mainWindow;
 let childProcess;
 
 //BEGIN dialog related code
-// Handle file dialog request from renderer
 // Handle file dialog request from renderer - using handle/invoke pattern
-ipcMain.handle('open-file-dialog', async () => {
+/* ipcMain.handle('open-file-dialog', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
     filters: [
@@ -22,8 +21,14 @@ ipcMain.handle('open-file-dialog', async () => {
     return result.filePaths[0]; // Return the selected file path
   }
   return null; // Return null if canceled
+}); */
+ipcMain.handle('dialog:openFile', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+        properties: ['openFile']
+    });
+    if (canceled || filePaths.length === 0) return null;
+    return filePaths[0];
 });
-
 //END dialog related code
 
 
@@ -101,12 +106,18 @@ function createWindow() {
         width: mainWindowState.width,
         height: mainWindowState.height,
         webPreferences: {
-            nodeIntegration: false,
             contextIsolation: true,
+            nodeIntegration: false,
             preload: path.join(__dirname, 'preload.js')
         }
     });
+/*
+           
+            nodeIntegration: false,
+            contextIsolation: true,
+sandbox: true,
 
+*/
     // Let windowStateKeeper manage the window
     mainWindowState.manage(mainWindow);
 

@@ -1,13 +1,11 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 
-
-
 contextBridge.exposeInMainWorld('electronAPI', {
   // File dialog
-  showOpenDialog: async () => {
+/*   showOpenDialog: async () => {
     try {
-      const filePath = await ipcRenderer.invoke('open-file-dialog');
+      const filePath = await ipcRenderer.invoke('dialog:openFile');
       //updateDisplay(filePath);
       return filePath;
     } 
@@ -15,8 +13,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
       console.error('Error opening file dialog:', error);
       return null;
     }
-  },
-  
+  }, */
+  openFile: async () => await ipcRenderer.invoke('dialog:openFile'),
   // Server control
   startServer: (executablePath, modelPath, host, port, ctx) => {
     ipcRenderer.send('start-server', executablePath, modelPath, host, port, ctx);

@@ -1,7 +1,3 @@
-// Remove the require statements since we're using contextIsolation
-// const { ipcRenderer } = require('electron');
-// const { dialog } = require('electron');
-
 const settingsManager = new SettingsManager();
 
 function startServer() {
@@ -29,7 +25,7 @@ function stopServer() {
 document.addEventListener('DOMContentLoaded', () => {
     // Load saved settings into form inputs
     settingsManager.loadAndPopulate();
-    
+
     // Set up server output listeners
     window.electronAPI.onServerOutput((data) => {
         const message = data + '\n';
@@ -45,12 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**********************/
 //BEGIN file selection dialog
-document.getElementById('choose-model').addEventListener('click', async () => {
+/* document.getElementById('choose-model').addEventListener('click', async () => {
     try {
         const filePath = await window.electronAPI.showOpenDialog();
-        //console.log("before file");
-        //console.log(filePath);
-        //console.log("after file");
+        console.log("before file");
+        console.log(filePath);
+        console.log("after file");
         if (filePath) {
             updateDisplay2(filePath);
         }
@@ -58,14 +54,23 @@ document.getElementById('choose-model').addEventListener('click', async () => {
         console.error('Error selecting file:', error);
         alert('Error selecting file: ' + error.message);
     }
+}); */
+document.getElementById('choose-model').addEventListener('click', async () => {
+    const filePath = await window.electronAPI.openFile();
+    if (filePath) {
+        document.getElementById('modelPath').value = filePath;
+        // Save the setting directly since programmatic value changes don't trigger 'change' events
+        settingsManager.saveSetting('modelPath', filePath);
+    }
 });
 
-function updateDisplay2(path) {
+
+/* function updateDisplay2(path) {
     if (!path) return;
     document.getElementById('modelPath').value = path;
     // Save the setting directly since programmatic value changes don't trigger 'change' events
     settingsManager.saveSetting('modelPath', path);
-}
+} */
 //END file selection dialog
 
 //************************************/
@@ -103,10 +108,7 @@ function addLog(message) {
 
 //************************************/
 // BEGIN DevTools related code
-document.addEventListener('DOMContentLoaded', () => {
-    // Note: You can't directly access webContents in renderer with contextIsolation
-    // The DevTools opening should be handled through IPC if needed
-});
+
 
 document.getElementById('toggle-devtools').addEventListener('click', () => {
     window.electronAPI.toggleDevTools();
