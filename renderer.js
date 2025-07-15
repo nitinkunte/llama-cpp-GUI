@@ -7,11 +7,10 @@ function startServer() {
     const ctx = document.getElementById('ctx').value;
 
     const llamaServerPath = settingsManager.loadSetting("llamaServerPath");
-    if (!modelPath || !host || !port) {
+    if (!modelPath || !host || !port || !modelPath) {
         alert("Please fill in required fields.");
         return;
     }
-
     // Now using the exposed API
     window.electronAPI.startServer(llamaServerPath, modelPath, host, port, ctx);
 }
@@ -41,36 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**********************/
 //BEGIN file selection dialog
-/* document.getElementById('choose-model').addEventListener('click', async () => {
-    try {
-        const filePath = await window.electronAPI.showOpenDialog();
-        console.log("before file");
-        console.log(filePath);
-        console.log("after file");
-        if (filePath) {
-            updateDisplay2(filePath);
-        }
-    } catch (error) {
-        console.error('Error selecting file:', error);
-        alert('Error selecting file: ' + error.message);
-    }
-}); */
+
 document.getElementById('choose-model').addEventListener('click', async () => {
     const filePath = await window.electronAPI.openFile();
     if (filePath) {
-        document.getElementById('modelPath').value = filePath;
         // Save the setting directly since programmatic value changes don't trigger 'change' events
         settingsManager.saveSetting('modelPath', filePath);
+        document.getElementById('modelPath').value = filePath;
     }
 });
 
-
-/* function updateDisplay2(path) {
-    if (!path) return;
-    document.getElementById('modelPath').value = path;
-    // Save the setting directly since programmatic value changes don't trigger 'change' events
-    settingsManager.saveSetting('modelPath', path);
-} */
 //END file selection dialog
 
 //************************************/
@@ -103,13 +82,10 @@ function addLog(message) {
     }
 }
 
-// Remove the old ipcRenderer listeners since they're now handled in DOMContentLoaded
 //END log related code
 
 //************************************/
 // BEGIN DevTools related code
-
-
 document.getElementById('toggle-devtools').addEventListener('click', () => {
     window.electronAPI.toggleDevTools();
 });

@@ -8,20 +8,6 @@ let childProcess;
 
 //BEGIN dialog related code
 // Handle file dialog request from renderer - using handle/invoke pattern
-/* ipcMain.handle('open-file-dialog', async () => {
-  const result = await dialog.showOpenDialog(mainWindow, {
-    properties: ['openFile'],
-    filters: [
-      { name: 'GGUF Files', extensions: ['gguf'] },
-      { name: 'All Files', extensions: ['*'] }
-    ]
-  });
-  
-  if (!result.canceled && result.filePaths.length > 0) {
-    return result.filePaths[0]; // Return the selected file path
-  }
-  return null; // Return null if canceled
-}); */
 ipcMain.handle('dialog:openFile', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
         properties: ['openFile']
@@ -32,7 +18,6 @@ ipcMain.handle('dialog:openFile', async () => {
 //END dialog related code
 
 
-//ipcMain.on('start-server', (event, modelPath, host, port, ctx) => {
 ipcMain.on('start-server', (event, executablePath, modelPath, host, port, ctx) => {
 
     // Request the path from renderer process
@@ -58,7 +43,8 @@ ipcMain.on('start-server', (event, executablePath, modelPath, host, port, ctx) =
             console.error(`stderr: ${data}`);
             event.reply('server-error', data.toString());
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Failed to retrieve executable path:", error);
     }
 });
@@ -111,13 +97,7 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js')
         }
     });
-/*
-           
-            nodeIntegration: false,
-            contextIsolation: true,
-sandbox: true,
 
-*/
     // Let windowStateKeeper manage the window
     mainWindowState.manage(mainWindow);
 
