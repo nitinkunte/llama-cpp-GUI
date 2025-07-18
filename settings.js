@@ -1,5 +1,3 @@
-//const settingsManager = new SettingsManager();
-
 
 function openSettingsModal() {
     document.getElementById("settingsOverlay").style.display = "block";
@@ -21,14 +19,13 @@ function closeSettingsModal() {
     };
     settingsManager.saveAll(settings);
 
+    // Rest of the close modal code
     const dialog = document.getElementById("settingsDialog");
     if (typeof dialog.close === 'function') {
         dialog.close();
     }
 
-    // Rest of the close modal code
     document.getElementById("settingsOverlay").style.display = "none";
-
 }
 
 
