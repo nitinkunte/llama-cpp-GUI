@@ -1,32 +1,4 @@
 
-function openSettingsModal() {
-    document.getElementById("settingsOverlay").style.display = "block";
-    const dialog = document.getElementById("settingsDialog");
-    if (typeof dialog.show === 'function') {
-        dialog.show();
-    }
-    
-}
-
-function closeSettingsModal() {
-    // Save all form inputs in the modal before closing it
-    const settings = {
-        llamaServerPath: document.getElementById('llamaServerPath').value,
-        host: document.getElementById('defaultHost').value,
-        port: parseInt(document.getElementById('defaultPort').value, 10),
-        ctxSize: parseInt(document.getElementById('defaultCtxSize').value, 10),
-        keepTokens: parseInt(document.getElementById('defaultKeepTokens').value, 10)
-    };
-    settingsManager.saveAll(settings);
-
-    // Rest of the close modal code
-    const dialog = document.getElementById("settingsDialog");
-    if (typeof dialog.close === 'function') {
-        dialog.close();
-    }
-
-    document.getElementById("settingsOverlay").style.display = "none";
-}
 
 
 const toggle = document.getElementById("themeToggle");
@@ -78,9 +50,9 @@ function setupAutoSave() { // Accept SettingsManager instance as a parameter or 
         });
     });
 
-    toggle.addEventListener('change', () => {
+/*     toggle.addEventListener('change', () => {
         settingsManager.saveThemePreference(toggle.checked);
-    });
+    }); */
 }
 
 
@@ -94,3 +66,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAutoSave();
 
 });
+
+
+// TEST TO BE DELETED
+const dialog = document.querySelector("dialog");
+const showDialog = document.querySelector("#showSettingsDialog");
+//const closeDialog = document.querySelector("#closeDialog");
+
+const closeDialog = document.querySelector("dialog button");
+
+showDialog.addEventListener("click", () => {
+  dialog.showModal();
+});
+
+// "Close" button closes the dialog
+closeDialog.addEventListener("click", () => {
+  dialog.close();
+});
+
+
+
+// END Test

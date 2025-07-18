@@ -19,6 +19,7 @@
             overflow-y: auto;
         }
 
+
         .settingsDialogCloseButton {
 
             position: absolute;
@@ -27,7 +28,7 @@
             cursor: pointer;
             font-size: 24px;
             color: whitesmoke;
-            user-select: none;
+            z-index: 1000;
         }
 
         dialog {
@@ -35,12 +36,64 @@
             min-width: auto !important;
         }
 
-        #settingsDialog.modal {
-            width: 600px !important;
-            height: 600px !important;
-            border-width: 2px;
-            border-style: solid;
+        #settingsDialog {
+            width: 600px;
+            max-width: 90vw;
+            /* shrink on narrow screens */
+            height: 600px;
+            max-height: 90vh;
+            padding: 0;
+            border: none;
+            /* we’ll draw our own border */
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+            background: var(--pico-background-color);
+            color: var(--pico-color);
+            overflow: hidden;
+            /* keep rounded corners visible */
+        }
 
+        /* ---------- 3.  Border that respects light/dark ---------- */
+        #settingsDialog::backdrop {
+            background: rgba(0, 0, 0, .45);
+        }
+
+/* Dark-theme overrides */
+[data-theme="dark"] #settingsDialog {
+    background: var(--pico-card-background-color); /* lighter than body */
+    border: 2px solid var(--pico-form-element-border-color);
+}
+
+/* optional: backdrop a bit lighter in dark mode */
+[data-theme="dark"] #settingsDialog::backdrop {
+    background: rgba(0, 0, 0, .45);   /* was .65 */
+}
+
+        /* inner border so we don’t lose the rounded corners */
+        #settingsDialog::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--pico-form-element-border-color);
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        /* ---------- 4.  Optional: smooth pop-up animation ---------- */
+        @keyframes popIn {
+            from {
+                transform: scale(.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #settingsDialog[open] {
+            animation: popIn .25s ease-out;
         }
     </style>
 
@@ -55,114 +108,109 @@
             <ul>
                 <li><a href="#">About</a></li>
                 <li><a href="#" id="toggle-devtools">DevTools</a></li>
-                <li><a href="#" onclick="openSettingsModal()">Settings</a></li>
+                <li><a id="showSettingsDialog" href="#"">Settings</a></li>
             </ul>
         </nav>
 
         <form>
-            <label for="modelPath">Model Path:</label>
-            <fieldset role="group">
-                <input name="modelPath" id="modelPath" placeholder="Choose Model" />
-                <!-- <button id="choose-model"> ... </button> -->
-                <input id="choose-model" type="button" value="..."> </button>
-            </fieldset>
-        </form>
+            <label for=" modelPath">Model Path:</label>
+                        <fieldset role="group">
+                            <input name="modelPath" id="modelPath" placeholder="Choose Model" />
+                            <!-- <button id="choose-model"> ... </button> -->
+                            <input id="choose-model" type="button" value="..."> </button>
+                        </fieldset>
+                        </form>
 
-        <div class="grid">
-            <div>
-                <label for="host">Host: (default = 0.0.0.0)</label>
-                <input type="text" id="host" value="0.0.0.0">
-            </div>
-            <div>
-                <label for="port">Port: (default = 10000)</label>
-                <input type="text" id="port" value="10002">
-            </div>
-        </div>
+                        <div class="grid">
+                            <div>
+                                <label for="host">Host: (default = 0.0.0.0)</label>
+                                <input type="text" id="host" value="0.0.0.0">
+                            </div>
+                            <div>
+                                <label for="port">Port: (default = 10000)</label>
+                                <input type="text" id="port" value="10002">
+                            </div>
+                        </div>
 
-        <div class="grid">
-            <div>
-                <label for="ctx">Context Size: (default = 32000)</label>
-                <input type="text" id="ctx" value="32000">
-            </div>
-            <div>
-                <label for="keepTokens">First 'N' tokens (default, 0):</label>
-                <input type="number" id="keepTokens" min="0" max="1200" value="600">
-            </div>
-        </div>
+                        <div class="grid">
+                            <div>
+                                <label for="ctx">Context Size: (default = 32000)</label>
+                                <input type="text" id="ctx" value="32000">
+                            </div>
+                            <div>
+                                <label for="keepTokens">First 'N' tokens (default, 0):</label>
+                                <input type="number" id="keepTokens" min="0" max="1200" value="600">
+                            </div>
+                        </div>
 
-        <div class="grid">
-            <div>
-                <button onclick="startServer()">Start Server</button>
-            </div>
-            <div>
-                <button onclick="stopServer()">Stop Server</button>
-            </div>
-            <div>
+                        <div class="grid">
+                            <div>
+                                <button onclick="startServer()">Start Server</button>
+                            </div>
+                            <div>
+                                <button onclick="stopServer()">Stop Server</button>
+                            </div>
+                            <div>
 
-            </div>
-        </div>
+                            </div>
+                        </div>
 
-        <hr>
+                        <hr>
 
-        <h2>Logs:</h2>
-        <div class="logsWrapperDiv">
-            <pre id="logs"></pre>
-        </div>
+                        <h2>Logs:</h2>
+                        <div class="logsWrapperDiv">
+                            <pre id="logs"></pre>
+                        </div>
     </div>
 
+    <!-- Start Settings Modal -->
+    <dialog id="settingsDialog">
+        <button id="closeDialog" class="settingsDialogCloseButton">X</button>
+        <div class="container-fluid" style="position: relative;">
+            <h3>Settings</h3>
+            <div>
+                <label for="modelPath">Llama Server Path:</label>
+                <input name="modelPath" id="llamaServerPath" placeholder="Choose llama-server Path" />
+            </div>
 
-
-
-
-    <!-- Settings Modal -->
-    <div class="modal-overlay" id="settingsOverlay"></div>
-    <dialog class="modal pico-color-zinc-500" id="settingsDialog">
-        <!-- Custom X icon -->
-        <span onclick="closeSettingsModal()" class="settingsDialogCloseButton" role="button" aria-label="Close">X</span>
-        <div class="container-fluid">
-            <div style="position: relative;">
-
-                <h3>Settings</h3>
-
-                <form>
-                    <label for="modelPath">Llama Server Path:</label>
-                    <fieldset role="group">
-                        <input name="modelPath" id="llamaServerPath" placeholder="Choose llama-server Path" />
-                    </fieldset>
-                </form>
-
-                <div class="grid">
-                    <div>
-                        <!-- Light/Dark Mode Toggle (using Pico's switch) -->
-                        <label for="themeToggle">Dark Mode</label>
-                        <input type="checkbox" id="themeToggle" role="switch">
-                    </div>
-                </div>
-
-                <!-- Default Values Section -->
-                <h4>Default Settings:</h4>
-                <div class="grid">
-                    <div>
-                        <label for="defaultHost">Host (e.g., 127.0.0.1):</label>
-                        <input type="text" id="defaultHost" placeholder="127.0.0.1">
-                    </div>
-                    <div>
-                        <label for="defaultPort">Port (e.g., 8080):</label>
-                        <input type="number" id="defaultPort" min="1" max="65535" value="10000">
-                    </div>
-                </div>
-                <div class="grid">
-                    <div>
-                        <label for="defaultCtxSize">Context Size:</label>
-                        <input type="number" id="defaultCtxSize" min="4000" step="128" placeholder="80000">
-                    </div>
-                    <div>
-                        <label for="defaultKeepTokens">First 'N' tokens to keep:</label>
-                        <input type="number" id="defaultKeepTokens" min="0" max="1200" value="600">
-                    </div>
+            <div class="grid">
+                <div>
+                    <!-- Light/Dark Mode Toggle (using Pico's switch) -->
+                    <label for="themeToggle">Dark Mode</label>
+                    <input type="checkbox" id="themeToggle" role="switch">
                 </div>
             </div>
+
+            <div class="grid">
+                <div>
+                    <label for="defaultHost">Host (e.g., 127.0.0.1):</label>
+                    <input type="text" id="defaultHost" placeholder="127.0.0.1">
+                </div>
+                <div>
+                    <label for="defaultPort">Port (e.g., 8080):</label>
+                    <input type="number" id="defaultPort" min="1" max="65535" value="10000">
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="defaultCtxSize">Context Size:</label>
+                    <input type="number" id="defaultCtxSize" min="4000" step="128" placeholder="80000">
+                </div>
+                <div>
+                    <label for="defaultKeepTokens">First 'N' tokens to keep:</label>
+                    <input type="number" id="defaultKeepTokens" min="0" max="1200" value="600">
+                </div>
+            </div>
+
+        </div>
     </dialog>
+
+    <!-- End Settings Modal -->
+
+
+
+
 
 
 
