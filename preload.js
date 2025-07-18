@@ -6,8 +6,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   openFile: async () => await ipcRenderer.invoke('dialog:openFile'),
   // Server control
-  startServer: (executablePath, modelPath, host, port, ctx) => {
-    ipcRenderer.send('start-server', executablePath, modelPath, host, port, ctx);
+  startServer: (executablePath, modelPath, host, port, ctx, keepTokens) => {
+    ipcRenderer.send('start-server', executablePath, modelPath, host, port, ctx, keepTokens);
   },
   
   stopServer: () => {

@@ -4,8 +4,9 @@ class SettingsManager {
     this.defaults = {
       modelPath: "",
       host: "0.0.0.0",
-      port: 10002,
-      ctxSize: 32000
+      port: 10000,
+      ctxSize: 32000,
+      keepTokens: 0
     };
   }
 
@@ -57,12 +58,14 @@ class SettingsManager {
     document.getElementById('host').value = settings.host;
     document.getElementById('port').value = settings.port;
     document.getElementById('ctx').value = settings.ctxSize;
+    document.getElementById('keepTokens').value = settings.keepTokens;  
 
     // For the settings modal
     document.getElementById('llamaServerPath').value = this.loadSetting('llamaServerPath') || '/usr/local/bin/llama-server';
     document.getElementById('defaultHost').value = settings.host;
     document.getElementById('defaultPort').value = settings.port;
     document.getElementById('defaultCtxSize').value = settings.ctxSize;
+    document.getElementById('defaultKeepTokens').value = settings.keepTokens;
 
     // For theme toggle
     if (isDarkMode) {

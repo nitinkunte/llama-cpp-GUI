@@ -10,7 +10,7 @@
             white-space: pre-wrap;
             word-break: break-all;
             font-family: 'Courier New', Courier, monospace;
-            background-color: darkslategray ;
+            background-color: darkslategray;
             color: whitesmoke;
         }
 
@@ -64,15 +64,11 @@
             <fieldset role="group">
                 <input name="modelPath" id="modelPath" placeholder="Choose Model" />
                 <!-- <button id="choose-model"> ... </button> -->
-                 <input id="choose-model" type="button" value="...">  </button>
+                <input id="choose-model" type="button" value="..."> </button>
             </fieldset>
         </form>
 
         <div class="grid">
-            <div>
-                <label for="ctx">Context Size: (default = 32000)</label>
-                <input type="text" id="ctx" value="32000">
-            </div>
             <div>
                 <label for="host">Host: (default = 0.0.0.0)</label>
                 <input type="text" id="host" value="0.0.0.0">
@@ -80,6 +76,17 @@
             <div>
                 <label for="port">Port: (default = 10000)</label>
                 <input type="text" id="port" value="10002">
+            </div>
+        </div>
+
+        <div class="grid">
+            <div>
+                <label for="ctx">Context Size: (default = 32000)</label>
+                <input type="text" id="ctx" value="32000">
+            </div>
+            <div>
+                <label for="keepTokens">First 'N' tokens (default, 0):</label>
+                <input type="number" id="keepTokens" min="0" max="1200" value="600">
             </div>
         </div>
 
@@ -102,6 +109,9 @@
             <pre id="logs"></pre>
         </div>
     </div>
+
+
+
 
 
     <!-- Settings Modal -->
@@ -137,20 +147,22 @@
                         <input type="text" id="defaultHost" placeholder="127.0.0.1">
                     </div>
                     <div>
-                        <label for="defaultPort">Port (e.g., 8080):</label><br />
-                        <input type="number" id="defaultPort" min="1" max="65535" value="10002">
+                        <label for="defaultPort">Port (e.g., 8080):</label>
+                        <input type="number" id="defaultPort" min="1" max="65535" value="10000">
+                    </div>
+                </div>
+                <div class="grid">
+                    <div>
+                        <label for="defaultCtxSize">Context Size:</label>
+                        <input type="number" id="defaultCtxSize" min="4000" step="128" placeholder="80000">
                     </div>
                     <div>
-                        <label for="defaultCtxSize">Context Size:</label><br />
-                        <input type="number" id="defaultCtxSize" min="4000" step="128" placeholder="32000">
+                        <label for="defaultKeepTokens">First 'N' tokens to keep:</label>
+                        <input type="number" id="defaultKeepTokens" min="0" max="1200" value="600">
                     </div>
                 </div>
             </div>
     </dialog>
-
-
-
-
 
 
 

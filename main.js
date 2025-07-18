@@ -18,12 +18,12 @@ ipcMain.handle('dialog:openFile', async () => {
 //END dialog related code
 
 
-ipcMain.on('start-server', (event, executablePath, modelPath, host, port, ctx) => {
+ipcMain.on('start-server', (event, executablePath, modelPath, host, port, ctx, keepTokens) => {
 
     // Request the path from renderer process
     try {
 
-        const args = ['-m', modelPath, '--host', host, '--port', port, "--ctx-size", ctx];
+        const args = ['-m', modelPath, '--host', host, '--port', port, "--ctx-size", ctx, "--keep", keepTokens];
 
         // Extract the directory from executablePath dynamically.
         const workingDirectory = path.dirname(executablePath);

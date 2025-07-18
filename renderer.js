@@ -5,6 +5,7 @@ function startServer() {
     const host = document.getElementById('host').value;
     const port = document.getElementById('port').value;
     const ctx = document.getElementById('ctx').value;
+    const keepTokens = document.getElementById('keepTokens').value;
 
     const llamaServerPath = settingsManager.loadSetting("llamaServerPath");
     if (!modelPath || !host || !port || !modelPath) {
@@ -12,7 +13,7 @@ function startServer() {
         return;
     }
     // Now using the exposed API
-    window.electronAPI.startServer(llamaServerPath, modelPath, host, port, ctx);
+    window.electronAPI.startServer(llamaServerPath, modelPath, host, port, ctx, keepTokens);
 }
 
 function stopServer() {
@@ -23,7 +24,9 @@ function stopServer() {
 //BEGIN Settings code
 document.addEventListener('DOMContentLoaded', () => {
     // Load saved settings into form inputs
-    settingsManager.loadAndPopulate();
+    //settingsManager.loadAndPopulate();
+    // setup auto save
+   // settingsManager.setupAutoSave();
 
     // Set up server output listeners
     window.electronAPI.onServerOutput((data) => {
